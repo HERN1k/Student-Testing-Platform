@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestingPlatform.Components.LeftSideBar"
+             xmlns:local="clr-namespace:TestingPlatform.Resources.Languages">
+    <ContentView.Resources>
+        <Style TargetType="Border" x:Key="SideBarBorder">
+            <Setter Property="BackgroundColor" Value="{StaticResource MainItem}"/>
+            <Setter Property="HorizontalOptions" Value="Start"/>
+            <Setter Property="VerticalOptions" Value="FillAndExpand"/>
+            <Setter Property="Stroke" Value="Transparent"/>
+            <Setter Property="StrokeThickness" Value="0"/>
+            <Setter Property="WidthRequest" Value="65"/>
+        </Style>
+        <Style TargetType="Image" x:Key="LogoImage">
+            <Setter Property="Source" Value="logomini.png"/>
+            <Setter Property="Aspect" Value="AspectFit"/>
+            <Setter Property="HorizontalOptions" Value="CenterAndExpand"/>
+            <Setter Property="WidthRequest" Value="45"/>
+            <Setter Property="HeightRequest" Value="45"/>
+            <Setter Property="Margin" Value="10, 15, 10, 30"/>
+        </Style>
+        <Style TargetType="ImageButton" x:Key="HomeImageButton">
+            <Setter Property="HorizontalOptions" Value="Start"/>
+            <Setter Property="MinimumWidthRequest" Value="35"/>
+            <Setter Property="MinimumHeightRequest" Value="35"/>
+            <Setter Property="WidthRequest" Value="35"/>
+            <Setter Property="HeightRequest" Value="35"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Aspect" Value="AspectFit"/>
+            <Setter Property="BackgroundColor" Value="Transparent"/>
+            <Setter Property="Opacity" Value="0.8"/>
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="Opacity" Value="0.25" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="PointerOver">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="#182c45" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="Scale" Value="0.9" />
+                                <Setter Property="BackgroundColor" Value="{StaticResource Gray400}" />
+                                <Setter Property="Opacity" Value="0.9" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+        <Style TargetType="HorizontalStackLayout" x:Key="MenuStackItem">
+            <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+            <Setter Property="VerticalOptions" Value="FillAndExpand"/>
+            <Setter Property="Margin" Value="15"/>
+        </Style>
+        <Style TargetType="Label" x:Key="MenuStackItemLabel">
+            <Setter Property="HorizontalOptions" Value="Start"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+            <Setter Property="TextColor" Value="{StaticResource White}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Nunito"/>
+            <Setter Property="Margin" Value="7, 0, 0, 0"/>
+            <Setter Property="CharacterSpacing" Value="0.5"/>
+        </Style>
+    </ContentView.Resources>
+
+    <Border 
+        x:Name="SideBarBorder"
+        Style="{StaticResource SideBarBorder}">
+        <Border.GestureRecognizers>
+            <PointerGestureRecognizer 
+                PointerEntered="OnPointerEntered"
+                PointerExited="OnPointerExited"/>
+        </Border.GestureRecognizers>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="70" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Image 
+                Style="{StaticResource LogoImage}"
+                Grid.Column="0"
+                Grid.Row="0">
+                <Image.Shadow>
+                    <Shadow 
+                        Brush="{StaticResource Gray600Brush}"
+                        Offset="0,0"
+                        Radius="5"
+                        Opacity="0.75" />
+                </Image.Shadow>
+            </Image>
+
+            <VerticalStackLayout 
+                VerticalOptions="FillAndExpand"
+                Grid.Column="0"
+                Grid.Row="1">
+                <HorizontalStackLayout
+                    Style="{StaticResource MenuStackItem}">
+                    <ImageButton 
+                        x:Name="HomeButton"
+                        Source="home.png"
+                        Style="{StaticResource HomeImageButton}" 
+                        Clicked="MenuButtonClicked"
+                        CommandParameter="HomeView" />
+                    <Label 
+                        Text="{x:Static local:Language.Home}" 
+                        x:Name="HomeButtonLabel"
+                        AutomationId="HomeButton"
+                        Style="{StaticResource MenuStackItemLabel}">
+                        <Label.GestureRecognizers>
+                            <PointerGestureRecognizer 
+                                PointerEntered="OnPointerEnteredLabel"
+                                PointerExited="OnPointerExitedLabel"
+                                PointerPressed="OnPointerPressedLabel"
+                                PointerReleased="OnPointerReleasedLabel" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout
+                    Style="{StaticResource MenuStackItem}">
+                    <ImageButton 
+                        x:Name="StarButton"
+                        Source="star.png"
+                        Style="{StaticResource HomeImageButton}" 
+                        Clicked="MenuButtonClicked"
+                        CommandParameter="HomeView" />
+                    <Label 
+                        Text="{x:Static local:Language.Assessments}"
+                        x:Name="StarButtonLabel"
+                        AutomationId="StarButton"
+                        Style="{StaticResource MenuStackItemLabel}">
+                        <Label.GestureRecognizers>
+                            <PointerGestureRecognizer 
+                                PointerEntered="OnPointerEnteredLabel"
+                                PointerExited="OnPointerExitedLabel"
+                                PointerPressed="OnPointerPressedLabel"
+                                PointerReleased="OnPointerReleasedLabel" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout
+                    Style="{StaticResource MenuStackItem}">
+                    <ImageButton 
+                        x:Name="UsersButton"
+                        Source="users.png"
+                        Style="{StaticResource HomeImageButton}" 
+                        Clicked="MenuButtonClicked"
+                        CommandParameter="HomeView" />
+                    <Label 
+                        Text="{x:Static local:Language.Students}"
+                        x:Name="UsersButtonLabel"
+                        AutomationId="UsersButton"
+                        Style="{StaticResource MenuStackItemLabel}">
+                        <Label.GestureRecognizers>
+                            <PointerGestureRecognizer 
+                                PointerEntered="OnPointerEnteredLabel"
+                                PointerExited="OnPointerExitedLabel"
+                                PointerPressed="OnPointerPressedLabel"
+                                PointerReleased="OnPointerReleasedLabel" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout
+                    Style="{StaticResource MenuStackItem}">
+                    <ImageButton 
+                        x:Name="SettingsButton"
+                        Source="settings.png"
+                        Style="{StaticResource HomeImageButton}" 
+                        Clicked="MenuButtonClicked"
+                        CommandParameter="HomeView" />
+                    <Label 
+                        Text="{x:Static local:Language.Settings}"
+                        x:Name="SettingsButtonLabel"
+                        AutomationId="SettingsButton"
+                        Style="{StaticResource MenuStackItemLabel}">
+                        <Label.GestureRecognizers>
+                            <PointerGestureRecognizer 
+                                PointerEntered="OnPointerEnteredLabel"
+                                PointerExited="OnPointerExitedLabel"
+                                PointerPressed="OnPointerPressedLabel"
+                                PointerReleased="OnPointerReleasedLabel" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <HorizontalStackLayout
+                Style="{StaticResource MenuStackItem}"
+                Grid.Column="0"
+                Grid.Row="2">
+                <ImageButton 
+                    x:Name="GitHubButton"
+                    Source="github.png"
+                    Style="{StaticResource HomeImageButton}" 
+                    Opacity="0.3"/>
+                <Label 
+                    Text="0.0.1v"
+                    Style="{StaticResource MenuStackItemLabel}"
+                    Opacity="0.5"
+                    FontSize="13" />
+            </HorizontalStackLayout>
+        </Grid>
+    </Border>
+</ContentView>

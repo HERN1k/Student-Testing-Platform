@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestingPlatform.Components.LocalizationMenu">
+    <ContentView.Resources>
+        <Style TargetType="AbsoluteLayout">
+            <Setter Property="HeightRequest" Value="90"/>
+            <Setter Property="WidthRequest" Value="30"/>
+            <Setter Property="HorizontalOptions" Value="End"/>
+            <Setter Property="VerticalOptions" Value="Start"/>
+        </Style>
+        <Style TargetType="ImageButton" x:Key="LanguageChange">
+            <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="7" />
+            <Setter Property="MinimumHeightRequest" Value="30" />
+            <Setter Property="MinimumWidthRequest" Value="30" />
+            <Setter Property="WidthRequest" Value="30" />
+            <Setter Property="HeightRequest" Value="30" />
+            <Setter Property="Aspect" Value="AspectFit" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="Source" Value="translate.png" />
+            <Setter Property="BorderColor" Value="Transparent"/>
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="Opacity" Value="0.5" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="PointerOver" />
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="Scale" Value="0.9" />
+                                <Setter Property="BackgroundColor" Value="DimGrey" />
+                                <Setter Property="Opacity" Value="0.9" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+        <Style TargetType="StackLayout" x:Key="LanguageChangeStack">
+            <Setter Property="MinimumWidthRequest" Value="30" />
+            <Setter Property="WidthRequest" Value="30" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="Orientation" Value="Vertical" />
+            <Setter Property="ZIndex" Value="-1" />
+        </Style>
+        <Style TargetType="ImageButton" x:Key="LanguageChangeItem">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="MinimumHeightRequest" Value="26" />
+            <Setter Property="MinimumWidthRequest" Value="26" />
+            <Setter Property="HeightRequest" Value="26" />
+            <Setter Property="WidthRequest" Value="26" />
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="BorderColor" Value="Transparent"/>
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="Opacity" Value="0.5" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="PointerOver" />
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="Scale" Value="0.9" />
+                                <Setter Property="Opacity" Value="0.9" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentView.Resources>
+
+    <AbsoluteLayout>
+        <AbsoluteLayout.Clip>
+            <RectangleGeometry Rect="0,0,30,90"/>
+        </AbsoluteLayout.Clip>
+
+        <ImageButton Style="{StaticResource LanguageChange}"
+                     AbsoluteLayout.LayoutBounds="1, 0, 30, 30"
+                     AbsoluteLayout.LayoutFlags="PositionProportional"
+                     x:Name="LanguageChangeButton"/>
+
+        <StackLayout IsVisible="False"
+                     x:Name="LocalizationMenuStack"
+                     Style="{StaticResource LanguageChangeStack}">
+            <ImageButton Source="flag_ua.png"
+                         Style="{StaticResource LanguageChangeItem}"
+                         x:Name="UALocalizationButton"
+                         CommandParameter="uk-UA" />
+            <ImageButton Source="flag_us.png"
+                         Style="{StaticResource LanguageChangeItem}"
+                         x:Name="USLocalizationButton"
+                         CommandParameter="en-US" />
+        </StackLayout>
+    </AbsoluteLayout>
+</ContentView>

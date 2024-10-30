@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestingPlatform.Components.Login"
+             xmlns:local="clr-namespace:TestingPlatform.Resources.Languages">
+    <ContentView.Resources>
+        <Style TargetType="Label" x:Key="BaseLabel">
+            <Setter Property="Margin" Value="0, 0, 0, 10" />
+            <Setter Property="TextColor" Value="{StaticResource White}" />
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Nunito"/>
+        </Style>
+        <Style TargetType="Label" x:Key="ErrorLabel">
+            <Setter Property="TextColor" Value="{StaticResource Error}" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Nunito"/>
+        </Style>
+        <Style TargetType="Entry" x:Key="BaseInput">
+            <Setter Property="TextColor" Value="{StaticResource White}" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontFamily" Value="Nunito"/>
+            <Setter Property="BackgroundColor" Value="{StaticResource MainItem}" />
+            <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+            <Setter Property="HorizontalTextAlignment" Value="Start" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="TextColor" Value="{StaticResource Gray300}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+        <Style TargetType="Button" x:Key="SubmitButton">
+            <Setter Property="TextColor" Value="{StaticResource MainBG}" />
+            <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+            <Setter Property="MinimumWidthRequest" Value="50" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="Padding" Value="25, 10, 25, 10" />
+            <Setter Property="FontFamily" Value="Nunito"/>
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="Opacity" Value="0.5" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="PointerOver" />
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="Scale" Value="0.95" />
+                                <Setter Property="BackgroundColor" Value="DimGrey" />
+                                <Setter Property="Opacity" Value="0.9" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+        <Style TargetType="ImageButton" x:Key="PasswordVisiblity">
+            <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="6" />
+            <Setter Property="Scale" Value="1" />
+            <Setter Property="MinimumHeightRequest" Value="35" />
+            <Setter Property="MinimumWidthRequest" Value="35" />
+            <Setter Property="HeightRequest" Value="35" />
+            <Setter Property="WidthRequest" Value="35" />
+            <Setter Property="Source" Value="eye.png" />
+            <Setter Property="Aspect" Value="AspectFit" />
+            <Setter Property="Opacity" Value="1" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="BorderColor" Value="Transparent"/>
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="Opacity" Value="0.5" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="PointerOver" />
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="Scale" Value="0.9" />
+                                <Setter Property="BackgroundColor" Value="DimGrey" />
+                                <Setter Property="Opacity" Value="0.9" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+        <Style TargetType="ImageButton" x:Key="MicrosoftButton">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Scale" Value="1" />
+            <Setter Property="MinimumHeightRequest" Value="50" />
+            <Setter Property="MinimumWidthRequest" Value="50" />
+            <Setter Property="HeightRequest" Value="50" />
+            <Setter Property="WidthRequest" Value="50" />
+            <Setter Property="Aspect" Value="AspectFit" />
+            <Setter Property="Opacity" Value="1" />
+            <Setter Property="HorizontalOptions" Value="End" />
+            <Setter Property="BorderColor" Value="Transparent"/>
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="Opacity" Value="0.5" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="PointerOver" />
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="Scale" Value="0.9" />
+                                <Setter Property="BackgroundColor" Value="DimGrey" />
+                                <Setter Property="Opacity" Value="0.9" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentView.Resources>
+
+    <VerticalStackLayout WidthRequest="400"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center">
+        <Label Text="{x:Static local:Language.Email}"
+               Style="{StaticResource BaseLabel}"
+               x:Name="EmailLabel"
+               SemanticProperties.HeadingLevel="Level2"/>
+        <Entry IsPassword="False" 
+               Margin="0, 0, 0, 25"
+               x:Name="EmailEntry"
+               Style="{StaticResource BaseInput}"/>
+        <Label IsVisible="False"
+               x:Name="EmailErrorLabel"
+               Style="{StaticResource ErrorLabel}"
+               TranslationY="-20"/>
+
+        <Label Text="{x:Static local:Language.Password}" 
+               Style="{StaticResource BaseLabel}"
+               x:Name="PasswordLabel"
+               SemanticProperties.HeadingLevel="Level2" />
+        <Grid ColumnSpacing="5" 
+              Margin="0, 0, 0, 50">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Entry IsPassword="True"
+                   Grid.Row="0"
+                   Grid.Column="0"
+                   x:Name="PasswordEntry"
+                   Style="{StaticResource BaseInput}"/>
+
+            <ImageButton Grid.Row="0"
+                         Grid.Column="1"
+                         Clicked="ChangePasswordVisiblity"
+                         Style="{StaticResource PasswordVisiblity}"/>
+        </Grid>
+        <Label IsVisible="False"
+               x:Name="PasswordErrorLabel"
+               Style="{StaticResource ErrorLabel}"
+               TranslationY="-45"/>
+
+        <HorizontalStackLayout>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+
+                <ImageButton Source="microsoft.png"
+                             Style="{StaticResource MicrosoftButton}"
+                             x:Name="MicrosoftButton"
+                             Grid.Row="0"
+                             Grid.Column="0"/>
+                <Button Text="{x:Static local:Language.SignIn}"
+                        Style="{StaticResource SubmitButton}"
+                        x:Name="SubmitButton"
+                        Grid.Row="0"
+                        Grid.Column="1"/>
+            </Grid>
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentView>
