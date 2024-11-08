@@ -59,14 +59,8 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
-            <SearchBar
-                Grid.Row="0"
-                Grid.Column="0"
-                Style="{StaticResource HomeSearchBar}" />
 
             <Grid 
                 Grid.Row="0"

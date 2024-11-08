@@ -1,25 +1,22 @@
 using System.Diagnostics;
 using System.Globalization;
 
-using Microsoft.Identity.Client;
-
 using TestingPlatform.Domain.Interfaces;
-using TestingPlatform.Domain.Json;
 using TestingPlatform.Utilities;
 
 namespace TestingPlatform.Components
 {
     public partial class Login : ContentView, IDisposable
     {
-        private readonly IAuthenticationService _authentication;
+        private readonly IGraphService _graph;
         private readonly ILocalizationService _localization;
         private bool disposedValue;
 
         private bool _isPassword { get; set; } = true;
 
-        public Login(IAuthenticationService authentication, ILocalizationService localization)
+        public Login(IGraphService graph, ILocalizationService localization)
         {
-            _authentication = authentication;
+            _graph = graph;
             _localization = localization;
 
             InitializeComponent();
@@ -70,13 +67,16 @@ namespace TestingPlatform.Components
 
         private async void Submit(object? sender, EventArgs e)
         {
-            try
+            try // //TODO
             {
                 await Shell.Current.GoToAsync("Home");
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Debug.WriteLine(ex.ToString());
+#endif
+                throw new NotImplementedException();
             }
 
             //bool isValidEmail = StringHelper.ValidateEmail(EmailEntry.Text, EmailErrorLabel, _localization);
@@ -95,31 +95,35 @@ namespace TestingPlatform.Components
 
         private async void OnSignInMicrosoft(object? sender, EventArgs e)
         {
-            AuthenticationResult? result = await _authentication.SignInAsync();
-            if (result != null)
+            try
             {
-                Me? me = await _authentication.HttpGet<Me>("me");
+                await _graph.AuthorizationAsync();
+            }
+            catch (InvalidOperationException ex)
+            {
+#if DEBUG
+                Debug.WriteLine(ex.ToString());
+#endif
+                throw new NotImplementedException();
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debug.WriteLine(ex.ToString());
+#endif
+                throw new NotImplementedException();
+            }
 
-                if (me is null)
-                    return;
-
-                EmailEntry.Text = string.Empty;
-                EmailErrorLabel.IsVisible = false;
-                PasswordEntry.Text = string.Empty;
-                PasswordErrorLabel.IsVisible = false;
-
-                Preferences.Set(Constants.UserDisplayName, me.DisplayName);
-                Preferences.Set(Constants.UserGivenName, me.GivenName);
-                Preferences.Set(Constants.UserJobTitle, me.JobTitle);
-                Preferences.Set(Constants.UserMail, me.Mail);
-                Preferences.Set(Constants.UserMobilePhone, me.MobilePhone);
-                Preferences.Set(Constants.UserOfficeLocation, me.OfficeLocation);
-                Preferences.Set(Constants.UserPreferredLanguage, me.PreferredLanguage);
-                Preferences.Set(Constants.UserSurname, me.Surname);
-                Preferences.Set(Constants.UserPrincipalName, me.UserPrincipalName);
-                Preferences.Set(Constants.UserID, me.ID);
-
-                await Alerts.ShowAsync(_localization.GetString("Congratulations"), me.DisplayName ?? "null", _localization.GetString("OK"));
+            try //TODO
+            {
+                await Shell.Current.GoToAsync("Home");
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debug.WriteLine(ex.ToString());
+#endif
+                throw new NotImplementedException();
             }
         }
 

@@ -5,12 +5,10 @@ namespace TestingPlatform
 {
     public partial class App : Application
     {
-        public readonly IAuthenticationService _authentication;
         public readonly ILocalizationService _localization;
 
-        public App(IAuthenticationService authentication, ILocalizationService localization)
+        public App(ILocalizationService localization)
         {
-            _authentication = authentication;
             _localization = localization;
 
             _localization.SetCultureOnStartup();

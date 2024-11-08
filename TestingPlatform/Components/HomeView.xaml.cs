@@ -8,14 +8,14 @@ namespace TestingPlatform.Components
     public partial class HomeView : ContentView, IDisposable
     {
         private readonly ILocalizationService _localization;
-        private readonly IAuthenticationService _authentication;
+        private readonly IGraphService _graph;
 
         private bool disposedValue;
 
-        public HomeView(ILocalizationService localization, IAuthenticationService authentication)
+        public HomeView(ILocalizationService localization, IGraphService graph)
         {
             _localization = localization;
-            _authentication = authentication;
+            _graph = graph;
 
             InitializeComponent();
             MainThread.InvokeOnMainThreadAsync(() => SetUserProfileDataAsync());
@@ -29,7 +29,7 @@ namespace TestingPlatform.Components
             UserProfileEmailLabel.Text = Preferences.Get(Constants.UserMail, "Null");
             UserProfileNameLabel.Text = Preferences.Get(Constants.UserDisplayName, "Null");
 
-            byte[] imageBytes = await _authentication.HttpGetArrayByte($"me/photo/$value");
+            byte[] imageBytes = await _graph.GetMyPhotoAsync();
 
             if (imageBytes.Length == 0)
             {

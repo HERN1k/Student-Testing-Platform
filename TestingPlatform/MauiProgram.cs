@@ -3,6 +3,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
+using NLog.Extensions.Logging;
+
 using TestingPlatform.Components;
 using TestingPlatform.Domain.Interfaces;
 using TestingPlatform.Pages;
@@ -16,7 +18,14 @@ namespace TestingPlatform
         public static MauiApp CreateMauiApp()
         {
             MauiAppBuilder builder = MauiApp.CreateBuilder();
-
+#if DEBUG
+            if (OperatingSystem.IsWindows())
+            {
+                builder.Logging.ClearProviders();
+                builder.Logging.AddNLog();
+                builder.Logging.AddDebug();
+            }
+#endif
             builder.UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
                 {
@@ -46,6 +55,28 @@ namespace TestingPlatform
                 options.Scopes = msal.Scopes;
             });
 
+            ApiConfiguration apiConfiguration = builder.Configuration.GetSection(nameof(ApiConfiguration)).Get<ApiConfiguration>()
+                ?? throw new ApplicationException("Appsettings.json stream is null.");
+
+            builder.Services.Configure<ApiConfiguration>(options =>
+            {
+                options.Uri = apiConfiguration.Uri;
+            });
+
+            builder.Services.AddHttpClient(Constants.ApiHttpClient, client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(30);
+            })
+            .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler
+                {
+                    AllowAutoRedirect = false,
+                    MaxConnectionsPerServer = 10
+                };
+            });
+
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<Home>();
 
@@ -55,11 +86,8 @@ namespace TestingPlatform
             builder.Services.AddSingleton<HomeView>();
 
             builder.Services.AddSingleton<ILocalizationService, LocalizationService>();
-            builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
-
-#if DEBUG
-            builder.Logging.AddDebug();
-#endif
+            builder.Services.AddSingleton<IGraphService, GraphService>();
+            builder.Services.AddSingleton<IApiService, ApiService>();
 
             return builder.Build();
         }

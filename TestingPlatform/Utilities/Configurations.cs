@@ -28,4 +28,16 @@
         public string GraphAPIEndpoint { get; set; } = string.Empty;
         public IEnumerable<string> Scopes { get; set; } = [];
     }
+
+    public record ApiConfiguration
+    {
+        public ApiConfiguration() { }
+
+        public ApiConfiguration(string uri)
+        {
+            this.Uri = uri;
+        }
+
+        public string Uri { get; set; } = string.Empty;
+    }
 }
