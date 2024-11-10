@@ -10,9 +10,9 @@ namespace TestingPlatform.Pages
 
         public Home(LeftSideBar leftSideBar, IServiceProvider serviceProvider)
         {
+            ValidateConstructorArguments(leftSideBar, serviceProvider);
             _leftSideBar = leftSideBar;
             _serviceProvider = serviceProvider;
-
             InitializeComponent();
 
             HomeGrid.SetRow(_leftSideBar, 0);
@@ -74,6 +74,12 @@ namespace TestingPlatform.Pages
             base.OnDisappearing();
 
             _leftSideBar?.Dispose();
+        }
+
+        private static void ValidateConstructorArguments(LeftSideBar leftSideBar, IServiceProvider serviceProvider)
+        {
+            ArgumentNullException.ThrowIfNull(leftSideBar, nameof(leftSideBar));
+            ArgumentNullException.ThrowIfNull(serviceProvider, nameof(serviceProvider));
         }
     }
 }

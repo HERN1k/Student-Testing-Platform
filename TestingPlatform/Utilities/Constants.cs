@@ -18,6 +18,7 @@
         /*
             APIS END POINTS
          */
+        public const string ApiClientAuthentication = "auth/authentication";
         public const string ApiClientTime = "time";
 
         /*

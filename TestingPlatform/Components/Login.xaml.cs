@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Globalization;
 
 using TestingPlatform.Domain.Interfaces;
@@ -9,16 +8,17 @@ namespace TestingPlatform.Components
     public partial class Login : ContentView, IDisposable
     {
         private readonly IGraphService _graph;
+        private readonly IApiService _api;
         private readonly ILocalizationService _localization;
+        private bool IsPassword { get; set; } = true;
         private bool disposedValue;
 
-        private bool _isPassword { get; set; } = true;
-
-        public Login(IGraphService graph, ILocalizationService localization)
+        public Login(IGraphService graph, IApiService api, ILocalizationService localization)
         {
+            ValidateConstructorArguments(graph, api, localization);
             _graph = graph;
+            _api = api;
             _localization = localization;
-
             InitializeComponent();
         }
 
@@ -29,6 +29,13 @@ namespace TestingPlatform.Components
             PasswordEntry.TextChanged += OnPasswordChanged;
             MicrosoftButton.Clicked += OnSignInMicrosoft;
             SubmitButton.Clicked += Submit;
+        }
+
+        private static void ValidateConstructorArguments(IGraphService graph, IApiService api, ILocalizationService localization)
+        {
+            ArgumentNullException.ThrowIfNull(graph, nameof(graph));
+            ArgumentNullException.ThrowIfNull(api, nameof(api));
+            ArgumentNullException.ThrowIfNull(localization, nameof(localization));
         }
 
         private void OnEmailChanged(object? sender, TextChangedEventArgs e)
@@ -56,10 +63,10 @@ namespace TestingPlatform.Components
             if (sender is not ImageButton button)
                 return;
 
-            _isPassword = !_isPassword;
-            PasswordEntry.IsPassword = _isPassword;
+            IsPassword = !IsPassword;
+            PasswordEntry.IsPassword = IsPassword;
 
-            if (_isPassword)
+            if (IsPassword)
                 button.Source = "eye.png";
             else
                 button.Source = "eye_open.png";
@@ -67,61 +74,47 @@ namespace TestingPlatform.Components
 
         private async void Submit(object? sender, EventArgs e)
         {
-            try // //TODO
-            {
-                await Shell.Current.GoToAsync("Home");
-            }
-            catch (Exception ex)
-            {
-#if DEBUG
-                Debug.WriteLine(ex.ToString());
-#endif
-                throw new NotImplementedException();
-            }
+            bool isValidEmail = StringHelper.ValidateEmail(EmailEntry.Text, EmailErrorLabel, _localization);
+            bool isValidPassword = StringHelper.ValidatePassword(PasswordEntry.Text, PasswordErrorLabel, _localization);
 
-            //bool isValidEmail = StringHelper.ValidateEmail(EmailEntry.Text, EmailErrorLabel, _localization);
-            //bool isValidPassword = StringHelper.ValidatePassword(PasswordEntry.Text, PasswordErrorLabel, _localization);
+            if (!isValidEmail || !isValidPassword)
+                return;
 
-            //if (!isValidEmail || !isValidPassword)
-            //    return;
+            EmailEntry.Text = string.Empty;
+            EmailErrorLabel.IsVisible = false;
+            PasswordEntry.Text = string.Empty;
+            PasswordErrorLabel.IsVisible = false;
 
-            //EmailEntry.Text = string.Empty;
-            //EmailErrorLabel.IsVisible = false;
-            //PasswordEntry.Text = string.Empty;
-            //PasswordErrorLabel.IsVisible = false;
-
-            //await Alerts.ShowAsync(_localization.GetString("Congratulations"), _localization.GetString("SignInWithMicrosoftAccount"), _localization.GetString("OK"));
+            await Alerts.ShowAsync(_localization.GetString("Congratulations"), _localization.GetString("SignInWithMicrosoftAccount"), _localization.GetString("OK"));
         }
 
         private async void OnSignInMicrosoft(object? sender, EventArgs e)
         {
             try
             {
-                await _graph.AuthorizationAsync();
-            }
-            catch (InvalidOperationException ex)
-            {
-#if DEBUG
-                Debug.WriteLine(ex.ToString());
-#endif
-                throw new NotImplementedException();
+                await _graph.AuthenticationAsync();
+                await _api.AuthenticationAsync();
             }
             catch (Exception ex)
             {
 #if DEBUG
-                Debug.WriteLine(ex.ToString());
+                await Alerts.ShowErrorWithTraceAsync(ex, _localization);
+#else
+                await Alerts.ShowErrorAsync(ex, _localization);
 #endif
-                throw new NotImplementedException();
+                return;
             }
 
-            try //TODO
+            try
             {
                 await Shell.Current.GoToAsync("Home");
             }
             catch (Exception ex)
             {
 #if DEBUG
-                Debug.WriteLine(ex.ToString());
+                await Alerts.ShowErrorWithTraceAsync(ex, _localization);
+#else
+                await Alerts.ShowErrorAsync(ex, _localization);
 #endif
                 throw new NotImplementedException();
             }
@@ -143,11 +136,6 @@ namespace TestingPlatform.Components
         }
 
         #region Disposing
-        ~Login()
-        {
-            Dispose(disposing: false);
-        }
-
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -172,6 +160,11 @@ namespace TestingPlatform.Components
                 disposedValue = true;
             }
         }
+
+        //~Login()
+        //{
+        //    Dispose(disposing: false);
+        //}
 
         public void Dispose()
         {

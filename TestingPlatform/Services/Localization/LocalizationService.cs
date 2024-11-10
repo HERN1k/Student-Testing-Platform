@@ -4,14 +4,10 @@ using System.Resources;
 using TestingPlatform.Domain.Interfaces;
 using TestingPlatform.Utilities;
 
-namespace TestingPlatform.Services
+namespace TestingPlatform.Services.Localization
 {
     public class LocalizationService : ILocalizationService
     {
-        private readonly ResourceManager _resourceManager;
-
-        public event EventHandler<CultureInfo> CultureChanged = null!;
-
         private CultureInfo _currentCulture;
         public CultureInfo CurrentCulture
         {
@@ -26,6 +22,9 @@ namespace TestingPlatform.Services
             }
         }
 
+        public event EventHandler<CultureInfo> CultureChanged = null!;
+        private readonly ResourceManager _resourceManager;
+
         public LocalizationService()
         {
             _resourceManager = new ResourceManager("TestingPlatform.Resources.Languages.Language", typeof(LocalizationService).Assembly);
@@ -37,8 +36,7 @@ namespace TestingPlatform.Services
             return _resourceManager.GetString(key, culture ?? CurrentCulture) ?? string.Empty;
         }
 
-        public void SetCultureOnStartup() =>
-            ChangeCulture(Preferences.Get(Constants.Culture, "uk-UA"));
+        public void SetCultureOnStartup() => ChangeCulture(Preferences.Get(Constants.Culture, "uk-UA"));
 
         public void ChangeCulture(string cultureCode)
         {

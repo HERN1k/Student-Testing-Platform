@@ -1,15 +1,14 @@
 ﻿namespace TestingPlatform.Utilities
 {
-    public record Msal
+    public record AzureAd
     {
-        public Msal() { }
+        public AzureAd() { }
 
-        public Msal(
+        public AzureAd(
             string ClientId,
             string Tenant,
             string RedirectUri,
             string Instance,
-            string GraphAPIEndpoint,
             IEnumerable<string> Scopes
           )
         {
@@ -17,7 +16,6 @@
             this.Tenant = Tenant;
             this.RedirectUri = RedirectUri;
             this.Instance = Instance;
-            this.GraphAPIEndpoint = GraphAPIEndpoint;
             this.Scopes = Scopes;
         }
 
@@ -25,7 +23,6 @@
         public string Tenant { get; set; } = string.Empty;
         public string RedirectUri { get; set; } = string.Empty;
         public string Instance { get; set; } = string.Empty;
-        public string GraphAPIEndpoint { get; set; } = string.Empty;
         public IEnumerable<string> Scopes { get; set; } = [];
     }
 

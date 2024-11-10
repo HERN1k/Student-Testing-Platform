@@ -1,21 +1,21 @@
 ﻿using System.Diagnostics;
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using TestingPlatform.Domain.Dto;
 using TestingPlatform.Domain.Interfaces;
-using TestingPlatform.Domain.Json;
 using TestingPlatform.Utilities;
 
-namespace TestingPlatform.Services
+namespace TestingPlatform.Services.Api
 {
-    public class ApiService : IApiService, IDisposable
+    public partial class ApiService : IApiService
     {
         private readonly HttpClient _httpClient;
         private readonly IGraphService _graph;
@@ -31,29 +31,33 @@ namespace TestingPlatform.Services
             ReadCommentHandling = JsonCommentHandling.Skip,
             PropertyNameCaseInsensitive = true
         };
+        private readonly int _maxRetries = 3;
         private bool disposedValue;
 
-        public ApiService(
-                IHttpClientFactory httpClientFactory,
-                IGraphService graph,
-                IOptions<ApiConfiguration> options,
-                ILogger<ApiService> logger
-            )
+        public ApiService(IHttpClientFactory httpClientFactory, IGraphService graph, IOptions<ApiConfiguration> options, ILogger<ApiService> logger)
         {
-            _httpClient = httpClientFactory.CreateClient(Constants.ApiHttpClient) ?? throw new ArgumentNullException(nameof(httpClientFactory));
-            _graph = graph ?? throw new ArgumentNullException(nameof(graph));
-            _configuration = options.Value ?? throw new ArgumentNullException(nameof(options));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            ArgumentException.ThrowIfNullOrWhiteSpace(_configuration.Uri, nameof(_configuration.Uri));
+            ValidateConstructorArguments(httpClientFactory, graph, options, logger);
+            _configuration = SetApiConfiguration(options);
+            _httpClient = httpClientFactory.CreateClient(Constants.ApiHttpClient);
+            _graph = graph;
+            _logger = logger;
         }
 
-        public async Task<DateTime> GetTimeAsync()
+        private static void ValidateConstructorArguments(IHttpClientFactory httpClientFactory, IGraphService graph, IOptions<ApiConfiguration> options, ILogger<ApiService> logger)
         {
-            var qb = new QueryBuilder([new KeyValuePair<string, string>("utc", bool.TrueString)]);
-            var uri = new Uri($"{_configuration.Uri}{Constants.ApiClientTime}{qb}");
-            var response = await HttpGetAsync<ApiClientTimeModel>(uri);
-            return response.Time ?? DateTime.UnixEpoch;
+            ArgumentNullException.ThrowIfNull(httpClientFactory, nameof(httpClientFactory));
+            ArgumentNullException.ThrowIfNull(graph, nameof(graph));
+            ArgumentNullException.ThrowIfNull(options, nameof(options));
+            ArgumentNullException.ThrowIfNull(logger, nameof(logger));
+        }
+
+        private static ApiConfiguration SetApiConfiguration(IOptions<ApiConfiguration> options)
+        {
+            ApiConfiguration configuration = options.Value;
+
+            ArgumentException.ThrowIfNullOrWhiteSpace(configuration.Uri, nameof(options));
+
+            return configuration;
         }
 
         private static void ThrowIfIncorrectUri(Uri uri)
@@ -72,7 +76,17 @@ namespace TestingPlatform.Services
             }
         }
 
-        private async Task SetAuthorizationHeader(HttpRequestMessage requestMessage)
+        private static void SetRequestBody<TValue>(HttpRequestMessage requestMessage, TValue body) where TValue : class
+        {
+            ArgumentNullException.ThrowIfNull(requestMessage, nameof(requestMessage));
+            ArgumentNullException.ThrowIfNull(body, nameof(body));
+
+            string requestbody = JsonSerializer.Serialize(body) ?? throw new ArgumentNullException("Request body is empty");
+
+            requestMessage.Content = new StringContent(requestbody, Encoding.UTF8, "application/json");
+        }
+
+        private static async Task SetAuthorizationHeader(HttpRequestMessage requestMessage)
         {
             ArgumentNullException.ThrowIfNull(requestMessage, nameof(requestMessage));
 
@@ -81,33 +95,42 @@ namespace TestingPlatform.Services
             requestMessage.Headers.Authorization = new AuthenticationHeaderValue(Constants.ApiAuthScheme, token);
         }
 
-        private void SetRequestBody<TValue>(HttpRequestMessage requestMessage, TValue body) where TValue : class
+        private async Task<TModel> SendRequestWithRetryAsync<TModel>(HttpRequestMessage message) where TModel : ApiClientResponse.ResponseBase
         {
-            ArgumentNullException.ThrowIfNull(requestMessage, nameof(requestMessage));
-            ArgumentNullException.ThrowIfNull(body, nameof(body));
+            int retryCount = 0;
 
-            string requestbody = JsonSerializer.Serialize<TValue>(body) ?? throw new ArgumentNullException("Request body is empty");
-
-            requestMessage.Content = new StringContent(requestbody, Encoding.UTF8, "application/json");
-        }
-
-        private async Task<TModel> SendRequestWithRetryAsync<TModel>(HttpRequestMessage message) where TModel : class
-        {
-            var maxRetries = 3;
-            var retryCount = 0;
-
-            while (retryCount < maxRetries)
+            while (retryCount < _maxRetries)
             {
                 using (var response = await _httpClient.SendAsync(message))
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        return await JsonSerializer.DeserializeAsync<TModel>(response.Content.ReadAsStream(), _jsonOptions)
-                               ?? throw new ArgumentNullException("No data received");
+                        TModel data = await JsonSerializer.DeserializeAsync<TModel>(response.Content.ReadAsStream(), _jsonOptions)
+                            ?? throw new InvalidOperationException("No data received");
+
+                        if (!int.TryParse(data.Status, CultureInfo.InvariantCulture, out int code))
+                        {
+                            throw new InvalidOperationException("No data received");
+                        }
+
+                        if (code == 401)
+                        {
+                            await _graph.UpdateTokenAsync();
+                            await SetAuthorizationHeader(message);
+                            retryCount++;
+                            continue;
+                        }
+
+                        if (code != 200)
+                        {
+                            throw new InvalidOperationException("No data received");
+                        }
+
+                        return data;
                     }
                     else if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
-                        await _graph.UpdateToken();
+                        await _graph.UpdateTokenAsync();
                         await SetAuthorizationHeader(message);
                         retryCount++;
                         continue;
@@ -122,7 +145,7 @@ namespace TestingPlatform.Services
             throw new InvalidOperationException("Request failed after multiple attempts.");
         }
 
-        private async Task<TModel> HttpGetAsync<TModel>(Uri uri) where TModel : class
+        private async Task<TModel> HttpGetAsync<TModel>(Uri uri) where TModel : ApiClientResponse.ResponseBase
         {
             try
             {
@@ -165,7 +188,7 @@ namespace TestingPlatform.Services
             }
         }
 
-        private async Task<TModel> HttpPostAsync<TModel, TValue>(Uri uri, TValue body) where TModel : class where TValue : class
+        private async Task<TModel> HttpPostAsync<TModel, TValue>(Uri uri, TValue body) where TModel : ApiClientResponse.ResponseBase where TValue : class
         {
             try
             {

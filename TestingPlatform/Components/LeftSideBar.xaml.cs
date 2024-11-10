@@ -24,10 +24,9 @@ namespace TestingPlatform.Components
 
         public LeftSideBar(ILocalizationService localization)
         {
+            ValidateConstructorArguments(localization);
             _localization = localization;
-
             InitializeComponent();
-
             ChangeCurrentButton(string.Empty);
         }
 
@@ -42,6 +41,11 @@ namespace TestingPlatform.Components
         {
             _localization.CultureChanged += OnCultureChanged;
             GitHubButton.Clicked += GitHubButtonClicked;
+        }
+
+        private static void ValidateConstructorArguments(ILocalizationService localization)
+        {
+            ArgumentNullException.ThrowIfNull(localization, nameof(localization));
         }
 
         private void ChangeCurrentButton(string newCurrentButton)
@@ -162,11 +166,6 @@ namespace TestingPlatform.Components
         }
 
         #region Disposing
-        ~LeftSideBar()
-        {
-            Dispose(disposing: false);
-        }
-
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -182,6 +181,11 @@ namespace TestingPlatform.Components
                 disposedValue = true;
             }
         }
+
+        //~LeftSideBar()
+        //{
+        //    Dispose(disposing: false);
+        //}
 
         public void Dispose()
         {

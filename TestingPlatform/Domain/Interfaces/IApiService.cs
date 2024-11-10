@@ -1,7 +1,9 @@
 ﻿namespace TestingPlatform.Domain.Interfaces
 {
-    public interface IApiService
+    public interface IApiService : IDisposable
     {
-        Task<DateTime> GetTimeAsync();
+        Task AuthenticationAsync();
+
+        Task<string> TimeAsync(bool utc);
     }
 }

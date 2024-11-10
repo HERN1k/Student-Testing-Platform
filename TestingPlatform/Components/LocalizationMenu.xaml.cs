@@ -12,8 +12,8 @@ namespace TestingPlatform.Components
 
         public LocalizationMenu(ILocalizationService localization)
         {
+            ValidateConstructorArguments(localization);
             _localization = localization;
-
             InitializeComponent();
         }
 
@@ -22,6 +22,11 @@ namespace TestingPlatform.Components
             LanguageChangeButton.Clicked += OnLanguageButtonClicked;
             UALocalizationButton.Clicked += OnLocalizationSelected;
             USLocalizationButton.Clicked += OnLocalizationSelected;
+        }
+
+        private static void ValidateConstructorArguments(ILocalizationService localization)
+        {
+            ArgumentNullException.ThrowIfNull(localization, nameof(localization));
         }
 
         private async void OnLanguageButtonClicked(object? sender, EventArgs e)
@@ -63,11 +68,6 @@ namespace TestingPlatform.Components
         }
 
         #region Disposing
-        ~LocalizationMenu()
-        {
-            Dispose(disposing: false);
-        }
-
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -87,6 +87,11 @@ namespace TestingPlatform.Components
                 disposedValue = true;
             }
         }
+
+        //~LocalizationMenu()
+        //{
+        //    Dispose(disposing: false);
+        //}
 
         public void Dispose()
         {

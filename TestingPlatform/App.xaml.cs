@@ -9,12 +9,10 @@ namespace TestingPlatform
 
         public App(ILocalizationService localization)
         {
+            ValidateConstructorArguments(localization);
             _localization = localization;
-
             _localization.SetCultureOnStartup();
-
             InitializeComponent();
-
             MainPage = new AppShell();
         }
 
@@ -25,6 +23,11 @@ namespace TestingPlatform
             Window window = base.CreateWindow(activationState);
             window.Title = Constants.AppName;
             return window;
+        }
+
+        private static void ValidateConstructorArguments(ILocalizationService localization)
+        {
+            ArgumentNullException.ThrowIfNull(localization, nameof(localization));
         }
     }
 }

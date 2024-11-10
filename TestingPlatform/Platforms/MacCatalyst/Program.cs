@@ -2,7 +2,7 @@
 
 using UIKit;
 
-namespace TestingPlatform
+namespace TestingPlatform.Platforms.MacCatalyst
 {
     public class Program
     {

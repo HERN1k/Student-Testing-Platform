@@ -1,18 +1,10 @@
-﻿using Azure.Identity;
-
-using Microsoft.Graph;
-
-namespace TestingPlatform.Domain.Interfaces
+﻿namespace TestingPlatform.Domain.Interfaces
 {
-    public interface IGraphService
+    public interface IGraphService : IDisposable
     {
-        InteractiveBrowserCredential InteractiveCredential { get; }
+        Task AuthenticationAsync();
 
-        GraphServiceClient Client { get; }
-
-        Task AuthorizationAsync();
-
-        Task UpdateToken();
+        Task UpdateTokenAsync();
 
         Task<byte[]> GetMyPhotoAsync();
     }

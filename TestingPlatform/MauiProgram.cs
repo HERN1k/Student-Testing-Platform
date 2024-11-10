@@ -8,7 +8,9 @@ using NLog.Extensions.Logging;
 using TestingPlatform.Components;
 using TestingPlatform.Domain.Interfaces;
 using TestingPlatform.Pages;
-using TestingPlatform.Services;
+using TestingPlatform.Services.Api;
+using TestingPlatform.Services.Graph;
+using TestingPlatform.Services.Localization;
 using TestingPlatform.Utilities;
 
 namespace TestingPlatform
@@ -42,17 +44,16 @@ namespace TestingPlatform
             IConfigurationRoot config = new ConfigurationBuilder().AddJsonStream(stream).Build();
             builder.Configuration.AddConfiguration(config);
 
-            Msal msal = builder.Configuration.GetSection(nameof(Msal)).Get<Msal>()
+            AzureAd azureAd = builder.Configuration.GetSection(nameof(AzureAd)).Get<AzureAd>()
                 ?? throw new ApplicationException("Appsettings.json stream is null.");
 
-            builder.Services.Configure<Msal>(options =>
+            builder.Services.Configure<AzureAd>(options =>
             {
-                options.ClientId = msal.ClientId;
-                options.Tenant = msal.Tenant;
-                options.RedirectUri = msal.RedirectUri;
-                options.Instance = msal.Instance;
-                options.GraphAPIEndpoint = msal.GraphAPIEndpoint;
-                options.Scopes = msal.Scopes;
+                options.ClientId = azureAd.ClientId;
+                options.Tenant = azureAd.Tenant;
+                options.RedirectUri = azureAd.RedirectUri;
+                options.Instance = azureAd.Instance;
+                options.Scopes = azureAd.Scopes;
             });
 
             ApiConfiguration apiConfiguration = builder.Configuration.GetSection(nameof(ApiConfiguration)).Get<ApiConfiguration>()

@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace TestingPlatform
+namespace TestingPlatform.Platforms.iOS
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

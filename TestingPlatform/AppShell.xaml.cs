@@ -7,7 +7,6 @@ namespace TestingPlatform
         public AppShell()
         {
             InitializeComponent();
-
             Routing.RegisterRoute("Home", typeof(Home));
         }
     }

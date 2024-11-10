@@ -14,9 +14,9 @@ namespace TestingPlatform.Components
 
         public HomeView(ILocalizationService localization, IGraphService graph)
         {
+            ValidateConstructorArguments(localization, graph);
             _localization = localization;
             _graph = graph;
-
             InitializeComponent();
             MainThread.InvokeOnMainThreadAsync(() => SetUserProfileDataAsync());
         }
@@ -47,6 +47,12 @@ namespace TestingPlatform.Components
             }
         }
 
+        private static void ValidateConstructorArguments(ILocalizationService localization, IGraphService graph)
+        {
+            ArgumentNullException.ThrowIfNull(localization, nameof(localization));
+            ArgumentNullException.ThrowIfNull(graph, nameof(graph));
+        }
+
         private void OnCultureChanged(object? sender, CultureInfo newCulture)
         {
             UpdateTexts(newCulture);
@@ -58,23 +64,21 @@ namespace TestingPlatform.Components
         }
 
         #region Disposing
-        ~HomeView()
-        {
-            Dispose(disposing: false);
-        }
-
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
                 if (disposing)
-                {
-
-                }
+                { }
 
                 disposedValue = true;
             }
         }
+
+        //~HomeView()
+        //{
+        //    Dispose(disposing: false);
+        //}
 
         public void Dispose()
         {

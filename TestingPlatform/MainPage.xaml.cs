@@ -9,9 +9,9 @@ namespace TestingPlatform
 
         public MainPage(LocalizationMenu localizationMenu, Login login)
         {
+            ValidateConstructorArguments(localizationMenu, login);
             _localizationMenu = localizationMenu;
             _login = login;
-
             InitializeComponent();
 
             MainGrid.SetRow(_login, 1);
@@ -35,6 +35,12 @@ namespace TestingPlatform
 
             _localizationMenu?.Dispose();
             _login?.Dispose();
+        }
+
+        private static void ValidateConstructorArguments(LocalizationMenu localizationMenu, Login login)
+        {
+            ArgumentNullException.ThrowIfNull(localizationMenu, nameof(localizationMenu));
+            ArgumentNullException.ThrowIfNull(login, nameof(login));
         }
     }
 }
