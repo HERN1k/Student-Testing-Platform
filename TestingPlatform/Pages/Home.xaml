@@ -11,20 +11,47 @@
         </Style>
     </ContentPage.Resources>
 
-    <Grid x:Name="HomeGrid">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="1" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+    <AbsoluteLayout>
+        <ContentView 
+            AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+            AbsoluteLayout.LayoutFlags="All">
+            <Grid x:Name="HomeGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="1" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-        <BoxView
-            Grid.Row="0"
-            Grid.Column="1"
-            WidthRequest="1"
-            Style="{StaticResource LeftBarBoxView}"/>
-    </Grid>
+                <BoxView
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    WidthRequest="1"
+                    Style="{StaticResource LeftBarBoxView}"/>
+            </Grid>
+        </ContentView>
+
+        <ActivityIndicator 
+            x:Name="Loader"
+            IsRunning="True" 
+            Color="Azure"
+            Opacity="0"
+            ZIndex="1000010"
+            Scale="1.5"
+            IsVisible="False"
+            AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
+            AbsoluteLayout.LayoutFlags="PositionProportional" />
+        <Border 
+            x:Name="LoaderBG"
+            BackgroundColor="Black"
+            Opacity="0"
+            AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+            AbsoluteLayout.LayoutFlags="All"
+            Stroke="{x:Null}"
+            IsVisible="False"
+            StrokeThickness="0"
+            ZIndex="1000000" />
+    </AbsoluteLayout>
 </ContentPage>

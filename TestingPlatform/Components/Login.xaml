@@ -138,7 +138,7 @@
             </Setter>
         </Style>
     </ContentView.Resources>
-
+    
     <VerticalStackLayout WidthRequest="400"
                          HorizontalOptions="Center"
                          VerticalOptions="Center">

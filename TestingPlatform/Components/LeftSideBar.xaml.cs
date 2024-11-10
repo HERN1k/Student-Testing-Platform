@@ -17,8 +17,8 @@ namespace TestingPlatform.Components
             "UsersButton",
             "SettingsButton"
         };
-        private string _currentButton { get; set; } = "HomeButton";
-        private Home? _home { get; set; }
+        private string CurrentButton { get; set; } = "HomeButton";
+        private Home? Home { get; set; }
 
         private bool disposedValue;
 
@@ -34,7 +34,7 @@ namespace TestingPlatform.Components
         {
             base.OnParentSet();
 
-            _home = this.Parent.Parent as Home ?? throw new ArgumentNullException(nameof(Home));
+            Home = this.Parent.Parent.Parent.Parent as Home ?? throw new ArgumentNullException(nameof(Home));
         }
 
         public void SubscribeToEvents()
@@ -51,14 +51,14 @@ namespace TestingPlatform.Components
         private void ChangeCurrentButton(string newCurrentButton)
         {
             if (string.IsNullOrEmpty(newCurrentButton))
-                _currentButton = "HomeButton";
+                CurrentButton = "HomeButton";
             else
-                _currentButton = newCurrentButton;
+                CurrentButton = newCurrentButton;
 
-            this.FindByName<ImageButton>(_currentButton).BackgroundColor = Color.FromArgb("#182c45");
+            this.FindByName<ImageButton>(CurrentButton).BackgroundColor = Color.FromArgb("#182c45");
 
             List<string> normalButtons = _buttons
-                .Where(e => e != _currentButton)
+                .Where(e => e != CurrentButton)
                 .ToList();
 
             if (normalButtons is null)
@@ -136,7 +136,7 @@ namespace TestingPlatform.Components
                     label.Opacity = 1;
                     label.TranslationX = +1;
                     ChangeCurrentButton(label.AutomationId);
-                    _home?.ChangePage(imageButton.CommandParameter.ToString() ?? string.Empty);
+                    Home?.ChangePage(imageButton.CommandParameter.ToString() ?? string.Empty);
                 }
             }
         }
@@ -149,7 +149,7 @@ namespace TestingPlatform.Components
                 if (stack.Children.FirstOrDefault(e => e.GetType() == typeof(Label)) is Label label)
                 {
                     ChangeCurrentButton(label.AutomationId);
-                    _home?.ChangePage(imageButton.CommandParameter.ToString() ?? string.Empty);
+                    Home?.ChangePage(imageButton.CommandParameter.ToString() ?? string.Empty);
                 }
             }
         }

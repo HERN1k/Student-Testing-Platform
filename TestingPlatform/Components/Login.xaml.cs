@@ -92,6 +92,7 @@ namespace TestingPlatform.Components
         {
             try
             {
+                await Alerts.ToggleLoader(true);
                 await _graph.AuthenticationAsync();
                 await _api.AuthenticationAsync();
             }
@@ -103,6 +104,10 @@ namespace TestingPlatform.Components
                 await Alerts.ShowErrorAsync(ex, _localization);
 #endif
                 return;
+            }
+            finally
+            {
+                await Alerts.ToggleLoader(false);
             }
 
             try

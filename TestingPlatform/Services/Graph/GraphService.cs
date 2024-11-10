@@ -23,7 +23,7 @@ namespace TestingPlatform.Services.Graph
             {
                 if (_client == null)
                 {
-                    _client = InitializationGraphClient();
+                    _client = new(_interactiveCredential, _graphScopes);
                 }
 
                 return _client;
@@ -92,13 +92,6 @@ namespace TestingPlatform.Services.Graph
             {
                 throw new NotImplementedException();
             }
-        }
-
-        private GraphServiceClient InitializationGraphClient()
-        {
-            SecureStorage.RemoveAll();
-
-            return new(_interactiveCredential, _graphScopes);
         }
 
         #region Disposing

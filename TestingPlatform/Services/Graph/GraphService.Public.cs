@@ -17,7 +17,6 @@ namespace TestingPlatform.Services.Graph
             {
                 User user = await Client.Me.GetAsync() ?? throw new InvalidOperationException("Error loading user details");
 
-                Preferences.Clear();
                 Preferences.Set(Constants.UserDisplayName, user.DisplayName);
                 Preferences.Set(Constants.UserGivenName, user.GivenName);
                 Preferences.Set(Constants.UserJobTitle, user.JobTitle);

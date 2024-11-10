@@ -14,8 +14,11 @@ namespace TestingPlatform
             _login = login;
             InitializeComponent();
 
-            MainGrid.SetRow(_login, 1);
-            MainGrid.SetColumn(_login, 0);
+            MainGrid.SetRow(_login, 0);
+            MainGrid.SetColumn(_login, 1);
+
+            MainGrid.SetRow(_localizationMenu, 0);
+            MainGrid.SetColumn(_localizationMenu, 2);
 
             MainGrid.Add(_localizationMenu);
             MainGrid.Add(_login);
