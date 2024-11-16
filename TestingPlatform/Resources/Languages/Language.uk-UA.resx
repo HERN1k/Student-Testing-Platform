@@ -180,4 +180,7 @@
   <data name="Error" xml:space="preserve">
     <value>Помилка</value>
   </data>
+  <data name="Message" xml:space="preserve">
+    <value>Повідомлення</value>
+  </data>
 </root>

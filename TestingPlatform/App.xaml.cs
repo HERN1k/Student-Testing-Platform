@@ -13,16 +13,11 @@ namespace TestingPlatform
             _localization = localization;
             _localization.SetCultureOnStartup();
             InitializeComponent();
-            MainPage = new AppShell();
-        }
 
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            ArgumentNullException.ThrowIfNull(activationState);
-
-            Window window = base.CreateWindow(activationState);
-            window.Title = Constants.AppName;
-            return window;
+            MainPage = new AppShell()
+            {
+                Title = Constants.AppName
+            };
         }
 
         private static void ValidateConstructorArguments(ILocalizationService localization)

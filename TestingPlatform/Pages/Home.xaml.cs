@@ -25,7 +25,7 @@ namespace TestingPlatform.Pages
 
         public void MappingPages()
         {
-            using (IServiceScope scope = _serviceProvider.CreateScope())
+            using (var scope = _serviceProvider.CreateScope())
             {
                 _pages.Add(nameof(HomeView), scope.ServiceProvider.GetRequiredService<HomeView>());
             }
@@ -35,9 +35,13 @@ namespace TestingPlatform.Pages
         {
             ContentView page;
             if (_pages.ContainsKey(type))
+            {
                 page = _pages.FirstOrDefault(p => p.Key == type).Value;
+            }
             else
+            {
                 page = _pages.FirstOrDefault(p => p.Key == nameof(HomeView)).Value;
+            }
 
             if (page is not null)
             {

@@ -9,8 +9,11 @@ using TestingPlatform.Components;
 using TestingPlatform.Domain.Interfaces;
 using TestingPlatform.Pages;
 using TestingPlatform.Services.Api;
+using TestingPlatform.Services.Audio;
 using TestingPlatform.Services.Graph;
 using TestingPlatform.Services.Localization;
+using TestingPlatform.Services.Screen;
+using TestingPlatform.Services.Window;
 using TestingPlatform.Utilities;
 
 namespace TestingPlatform
@@ -52,6 +55,7 @@ namespace TestingPlatform
                 options.ClientId = azureAd.ClientId;
                 options.Tenant = azureAd.Tenant;
                 options.RedirectUri = azureAd.RedirectUri;
+                options.SuccessMessage = azureAd.SuccessMessage;
                 options.Instance = azureAd.Instance;
                 options.Scopes = azureAd.Scopes;
             });
@@ -89,6 +93,9 @@ namespace TestingPlatform
             builder.Services.AddSingleton<ILocalizationService, LocalizationService>();
             builder.Services.AddSingleton<IGraphService, GraphService>();
             builder.Services.AddSingleton<IApiService, ApiService>();
+            builder.Services.AddSingleton<IAudioCaptureService, AudioCaptureService>();
+            builder.Services.AddSingleton<IScreenCaptureService, ScreenCaptureService>();
+            builder.Services.AddSingleton<IWindowService, WindowService>();
 
             return builder.Build();
         }

@@ -9,7 +9,6 @@ namespace TestingPlatform.Components
     {
         private readonly ILocalizationService _localization;
         private readonly IGraphService _graph;
-
         private bool disposedValue;
 
         public HomeView(ILocalizationService localization, IGraphService graph)

@@ -10,15 +10,17 @@ namespace TestingPlatform.Components
         private readonly IGraphService _graph;
         private readonly IApiService _api;
         private readonly ILocalizationService _localization;
+        private readonly IWindowService _window;
         private bool IsPassword { get; set; } = true;
         private bool disposedValue;
 
-        public Login(IGraphService graph, IApiService api, ILocalizationService localization)
+        public Login(IGraphService graph, IApiService api, ILocalizationService localization, IWindowService window)
         {
             ValidateConstructorArguments(graph, api, localization);
             _graph = graph;
             _api = api;
             _localization = localization;
+            _window = window;
             InitializeComponent();
         }
 

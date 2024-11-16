@@ -104,11 +104,11 @@
             </Grid>
         </Grid>
 
-        <BoxView
+        <!--<BoxView
             Grid.Row="1"
             Grid.Column="0"
             HeightRequest="1"
-            Style="{StaticResource TopBarBoxView}"/>
+            Style="{StaticResource TopBarBoxView}"/>-->
         
         
     </Grid>

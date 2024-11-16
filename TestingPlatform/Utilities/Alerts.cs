@@ -32,14 +32,15 @@ namespace TestingPlatform.Utilities
             {
                 title = "Error";
                 cancel = "OK";
-                sb.Append("Message:\t");
+                sb.Append("Message:    ");
                 sb.Append(ex.Message);
             }
             else
             {
                 title = localization.GetString("Error") ?? string.Empty;
                 cancel = localization.GetString("OK") ?? string.Empty;
-                sb.Append("Message:\t");
+                sb.Append(localization.GetString("Message") ?? "Message");
+                sb.Append(":    ");
                 sb.Append(ex.Message);
             }
 
@@ -61,18 +62,19 @@ namespace TestingPlatform.Utilities
             {
                 title = "Error";
                 cancel = "OK";
-                sb.Append("Message:\t");
+                sb.Append("Message:    ");
                 sb.Append(ex.Message);
-                sb.Append("\n\t");
+                sb.Append("\n\nStackTrace:\n");
                 sb.Append(ex.StackTrace);
             }
             else
             {
                 title = localization.GetString("Error") ?? string.Empty;
                 cancel = localization.GetString("OK") ?? string.Empty;
-                sb.Append("Message:\t");
+                sb.Append(localization.GetString("Message") ?? "Message");
+                sb.Append(":    ");
                 sb.Append(ex.Message);
-                sb.Append("\n\t");
+                sb.Append("\n\nStackTrace:\n");
                 sb.Append(ex.StackTrace);
             }
 

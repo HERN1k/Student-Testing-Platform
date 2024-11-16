@@ -23,6 +23,7 @@ namespace TestingPlatform.Services.Localization
         }
 
         public event EventHandler<CultureInfo> CultureChanged = null!;
+
         private readonly ResourceManager _resourceManager;
 
         public LocalizationService()

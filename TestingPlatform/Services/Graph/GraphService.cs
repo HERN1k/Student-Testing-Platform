@@ -79,6 +79,7 @@ namespace TestingPlatform.Services.Graph
             {
                 var options = new InteractiveBrowserCredentialOptions
                 {
+                    BrowserCustomization = new() { SuccessMessage = _azureAd.SuccessMessage },
                     TenantId = _azureAd.Tenant,
                     ClientId = _azureAd.ClientId,
                     AuthorityHost = new Uri($"{_azureAd.Instance}{_azureAd.Tenant}/v2.0"),
